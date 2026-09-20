@@ -60,4 +60,15 @@ print("  打包于  %s" % meta["builtAt"])
 print("  SHA-256 %s" % meta["sha256"])
 PY
 
-echo "✅ 已同步 $HERE/app-release.apk 并重写 meta.js"
+# ── 更新日志 + K 线图 ────────────────────────────────────────────────
+# 两个都是从 App 仓库派生的，跑不动也不该拦住 APK 同步 —— 沿用已有产物就行。
+PY="${PYTHON:-python3}"
+soft() {
+  local what="$1"; shift
+  "$@" || echo "  ! $what 生成失败，沿用已有的产物" >&2
+}
+soft "更新日志" "$PY" "$HERE/tools/gen_changelog.py" --out "$HERE/changelog.js"
+soft "K 线图（宽）" "$PY" "$HERE/tools/gen_chart.py" --preset desktop --out "$HERE/chart.svg"
+soft "K 线图（窄）" "$PY" "$HERE/tools/gen_chart.py" --preset mobile  --out "$HERE/chart-mobile.svg"
+
+echo "✅ 已同步 $HERE/app-release.apk，并重写 meta.js / changelog.js / chart*.svg"

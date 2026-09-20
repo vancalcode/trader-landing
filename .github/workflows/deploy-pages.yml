@@ -5,7 +5,11 @@ name: Deploy to GitHub Pages
 #    （否则必须有人去 Settings → Pages 手动点一下开关）
 # 2. 每次 push 自动把站点重新发布一遍
 #
-# 因此仓库里**不需要**再手动配置 Pages 的 Source。
+# ⚠️ 刻意**不写** job 级的 environment:
+#    GitHub 自动创建 `github-pages` 环境时，把分支白名单写成了字面量 "None"
+#    （不是默认分支名），导致 `main` 在启动阶段就被 "environment protection rules"
+#    拒掉、0 个步骤执行。不声明 environment 就不会走那条校验。
+#    代价：Actions 页面不会显示部署环境的 URL 徽章，功能无影响。
 
 on:
   push:
@@ -17,7 +21,6 @@ permissions:
   pages: write
   id-token: write
 
-# 同一时间只跑一个部署，新的 push 取消掉排队中的旧任务
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -25,9 +28,6 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 

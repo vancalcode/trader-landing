@@ -1,0 +1,52 @@
+name: Deploy to GitHub Pages
+
+# 这个工作流有两个作用：
+# 1. 用 configure-pages 的 enablement:true **自动开启 Pages**
+#    （否则必须有人去 Settings → Pages 手动点一下开关）
+# 2. 每次 push 自动把站点重新发布一遍
+#
+# 因此仓库里**不需要**再手动配置 Pages 的 Source。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只跑一个部署，新的 push 取消掉排队中的旧任务
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # enablement: true —— 仓库没开 Pages 时由工作流代为开启
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      # 只发布站点需要的文件，别把 .git / .github 一起塞进产物
+      - name: Stage site
+        run: |
+          mkdir -p _site
+          rsync -a --exclude '.git' --exclude '.github' --exclude '_site' ./ _site/
+          echo "--- 待发布内容 ---"
+          ls -la _site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -20,7 +20,6 @@ SKIP 里是纯内部提交（README / 图标微调 / 测试基建），对下载
 """
 
 import argparse
-import datetime
 import json
 import os
 import re
@@ -52,6 +51,18 @@ def read_log(repo, limit):
     except subprocess.CalledProcessError as e:
         sys.exit("读 %s 的 git log 失败：%s" % (repo, e.stderr.strip()))
 
+    # 取**最新一条提交的时间**，而不是「现在」。
+    # 这样没有新提交时重跑，输出逐字节不变 —— 否则落地页每次都会凭空多一个
+    # 「只改了时间戳」的提交。
+    newest = ""
+    try:
+        newest = subprocess.run(
+            ["git", "-C", repo, "log", "-1",
+             "--date=format:%Y-%m-%d %H:%M", "--pretty=format:%ad"],
+            capture_output=True, text=True, check=True).stdout.strip()
+    except subprocess.CalledProcessError:
+        pass
+
     rows = []
     for line in out.splitlines():
         if "\x1f" not in line:
@@ -66,7 +77,7 @@ def read_log(repo, limit):
             rows.append((date, m.group(1).strip(), m.group(2).strip()))
         else:
             rows.append((date, "", subject))
-    return rows
+    return rows, newest
 
 
 def group(rows):
@@ -87,12 +98,12 @@ def main():
     p.add_argument("--print", action="store_true", help="只打印，不写文件")
     args = p.parse_args()
 
-    rows = read_log(args.repo, args.limit)
+    rows, newest = read_log(args.repo, args.limit)
     days = group(rows)
 
     payload = {
         "source": os.path.basename(os.path.normpath(args.repo)),
-        "generatedAt": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "updatedThrough": newest,
         "entries": days,
     }
 

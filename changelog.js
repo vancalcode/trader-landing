@@ -2,7 +2,7 @@
 // 源：trader-android 的 git log。重新生成：python3 tools/gen_changelog.py
 window.CHANGELOG = {
   "source": "trader-android",
-  "generatedAt": "2026-09-20 22:35",
+  "updatedThrough": "2026-09-20 11:13",
   "entries": [
     {
       "date": "2026-09-20",

@@ -465,7 +465,8 @@ footer{padding:46px 0 58px;border-top:1px solid var(--line);
         '<ul class="cl-items">' + items + '</ul></li>';
     }).join('');
 
-    set('cl-stamp', '以上由 ' + data.source + ' 的提交记录自动生成 · ' + data.generatedAt);
+    set('cl-stamp', '以上由 ' + data.source + ' 的提交记录自动生成 · 截至 ' +
+        (data.updatedThrough || data.generatedAt || '—'));
   })();
 
   // ── 二维码 ──

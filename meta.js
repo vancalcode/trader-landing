@@ -2,8 +2,8 @@
 window.APP_META = {
   "versionName": "1.0.0",
   "versionCode": 1,
-  "size": 12465470,
+  "size": 12516274,
   "sizeText": "11.9 MB",
-  "sha256": "7f3a243cc02df013264d9865fb58acf73ddcd0862b21f44b82b6fd307af818a2",
-  "builtAt": "2026-10-02 12:52",
+  "sha256": "701ec8c170fc12c6779332d462d7d9fe36812f96bcb75c2492fd698e3be2dff2",
+  "builtAt": "2026-10-11 12:08",
 };

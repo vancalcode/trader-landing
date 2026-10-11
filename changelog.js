@@ -2,8 +2,17 @@
 // 源：trader-android 的 git log。重新生成：python3 tools/gen_changelog.py
 window.CHANGELOG = {
   "source": "trader-android",
-  "updatedThrough": "2026-10-02 12:50",
+  "updatedThrough": "2026-10-11 12:07",
   "entries": [
+    {
+      "date": "2026-10-11",
+      "items": [
+        {
+          "tag": "",
+          "text": "Android 多周期训练台对齐 + 中英双语 + 自适应图标"
+        }
+      ]
+    },
     {
       "date": "2026-10-02",
       "items": [

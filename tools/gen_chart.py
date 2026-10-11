@@ -20,6 +20,7 @@ import json
 import math
 import os
 import sys
+import time
 
 # 两套尺寸。窄屏不是把大图缩小，是重新排版：根数减半、字号放大。
 PRESETS = {
@@ -46,14 +47,27 @@ DEFAULT_DATA = os.path.normpath(os.path.join(
     "..", "..", "trader-android", "app", "src", "main", "assets", "data.json"))
 
 
-def load_series(path, code):
+def load_series(path, code, period="1d"):
+    """把 series[].periods[period] 展平成 build() 期望的顶层 c/o/h/l/d。
+    新版 data.json 把蜡烛挪进了 periods 里，build() 只认顶层键，
+    所以挑出周期、把 t 转成 YYYYMMDD 日期串再向上展平。"""
     with open(path, encoding="utf-8") as f:
         doc = json.load(f)
-    for s in doc["series"]:
-        if s["code"] == code:
-            return s
-    have = ", ".join(s["code"] for s in doc["series"])
-    sys.exit("data.json 里没有 %s，只有：%s" % (code, have))
+    hit = next((s for s in doc["series"] if s["code"] == code), None)
+    if hit is None:
+        have = ", ".join(s["code"] for s in doc["series"])
+        sys.exit("data.json 里没有 %s，只有：%s" % (code, have))
+    periods = hit.get("periods") or {}
+    if period not in periods:
+        have = ", ".join(periods.keys())
+        sys.exit("%s 没有周期 %s，只有：%s" % (code, period, have))
+    p = periods[period]
+    d = [time.strftime("%Y%m%d", time.localtime(int(t))) for t in p["t"]]
+    return {
+        "code": hit["code"],
+        "name": hit["name"],
+        "o": p["o"], "h": p["h"], "l": p["l"], "c": p["c"], "d": d,
+    }
 
 
 def sma(vals, n):
@@ -194,7 +208,8 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--preset", choices=sorted(PRESETS), default="desktop")
     p.add_argument("--data", default=DEFAULT_DATA, help="App 的 assets/data.json")
-    p.add_argument("--code", default="510300", help="品种代码")
+    p.add_argument("--code", default="XAUUSDT", help="品种代码")
+    p.add_argument("--period", default="1d", help="周期（默认 1d = 日线）")
     p.add_argument("--bars", type=int, help="覆盖 preset 的画多少根")
     p.add_argument("--out", default=None)
     args = p.parse_args()
@@ -204,7 +219,7 @@ def main():
         cfg["bars"] = args.bars
     out_path = args.out or ("chart.svg" if args.preset == "desktop" else "chart-mobile.svg")
 
-    s = load_series(args.data, args.code)
+    s = load_series(args.data, args.code, args.period)
     svg, d0, d1, n = build(s, cfg)
 
     with open(out_path, "w", encoding="utf-8") as f:

@@ -1,21 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="22 19 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <!--
-    训练台图标 —— 三根 K 线，与 App 的
-    trader-android/app/src/main/res/drawable/ic_launcher_foreground.xml 同源。
+    训练台图标（kcenter 同源版）—— 与 App 图标 icon_v2_kcenter.png 同语言：
+    圆角有机外形 + 紫环 + 3 根 K 线。
 
     ⚠️ 这个文件是**唯一来源**：既当浏览器 favicon（<link rel="icon">），
     也是落地页顶部那个大图标（<img class="icon">）。改图标只改这里。
 
-    圆角方块底色用 #1B212C（Palette 的 panelRaised），比 App 图标的
-    #141821 亮一档 —— 因为落地页背景是更深的 #0D1117，用 #141821 会糊在一起。
+    落地页背景更深（#0D1117），外形填深棕 #2D1E14 + 橙边 #C87B4A，
+    与 App 图标在启动器圆遮罩里的配色区分。紫环 #7E5BC2、蜡烛沿用
+    项目 Palette（C_UP #2ED3A0、C_DOWN #FF6B81）。
   -->
-  <rect x="22" y="19" width="64" height="64" rx="15" fill="#1B212C"/>
-  <g stroke-linecap="round" stroke-width="3.5" fill="none">
-    <path d="M34,38 L34,72" stroke="#2ED3A0"/>
-    <path d="M54,30 L54,78" stroke="#FF6B81"/>
-    <path d="M74,26 L74,62" stroke="#2ED3A0"/>
+  <path d="M 14 6 C 6 7 4 16 6 26 C 8 38 13 50 24 57 C 36 63 50 59 57 49 C 63 40 61 28 55 18 C 47 7 32 3 22 4 C 18 4 15 5 14 6 Z"
+        fill="#2D1E14" stroke="#C87B4A" stroke-width="2.5" stroke-linejoin="round"/>
+  <circle cx="32" cy="32" r="14" fill="none" stroke="#7E5BC2" stroke-width="2"/>
+  <g stroke-linecap="round" fill="none" stroke-width="1.2">
+    <line x1="24" y1="25" x2="24" y2="40" stroke="#2ED3A0"/>
+    <line x1="32" y1="22" x2="32" y2="42" stroke="#FF6B81"/>
+    <line x1="40" y1="25" x2="40" y2="40" stroke="#2ED3A0"/>
   </g>
-  <rect x="29" y="46" width="10" height="18" fill="#2ED3A0"/>
-  <rect x="49" y="38" width="10" height="32" fill="#FF6B81"/>
-  <rect x="69" y="34" width="10" height="22" fill="#2ED3A0"/>
+  <rect x="21.5" y="28" width="5" height="9" fill="#2ED3A0"/>
+  <rect x="29.5" y="26" width="5" height="13" fill="#FF6B81"/>
+  <rect x="37.5" y="28" width="5" height="9" fill="#2ED3A0"/>
 </svg>

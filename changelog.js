@@ -2,11 +2,15 @@
 // 源：trader-android 的 git log。重新生成：python3 tools/gen_changelog.py
 window.CHANGELOG = {
   "source": "trader-android",
-  "updatedThrough": "2026-10-11 12:07",
+  "updatedThrough": "2026-10-11 12:22",
   "entries": [
     {
       "date": "2026-10-11",
       "items": [
+        {
+          "tag": "图标换成训练台新设计",
+          "text": "价格环 + 中心三K线（抗圆形裁切） - 用 icon_v2_kcenter 替换自适应图标 foreground 与 monochrome 剪影"
+        },
         {
           "tag": "",
           "text": "Android 多周期训练台对齐 + 中英双语 + 自适应图标"
